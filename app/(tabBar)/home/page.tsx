@@ -1,3 +1,3 @@
 export default function Home() {
-  return <div>Home</div>;
+  return <div className="w-screen h-screen bg-neutral-800">Home</div>;
 }
