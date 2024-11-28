@@ -50,10 +50,6 @@ export default function LoginPage() {
 
   return (
     <div className="flex justify-center relative items-center h-screen bg-gradient-to-bl from-blue-950 to-#272B38">
-      <div className="absolute top-4 left-10 flex items-center gap-2">
-        <Image src={tossLogo} alt="toss" width={30} height={30} />
-        <span className="text-white text-lg font-extrabold">토스증권</span>
-      </div>
       <motion.div
         className="max-w-screen-lg flex flex-col gap-4"
         initial={{ opacity: 0, y: 20 }}
