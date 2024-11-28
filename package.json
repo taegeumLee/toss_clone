@@ -9,12 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "framer-motion": "^11.11.17",
     "next": "14.2.18",
+    "prisma": "^5.22.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.9",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
