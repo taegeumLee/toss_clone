@@ -1,27 +1,17 @@
-import { prisma } from "@/lib/prisma";
+import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+
+const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
-    const { email, name, birth, nickname } = await request.json();
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "이미 존재하는 이메일입니다." },
-        { status: 400 }
-      );
-    }
+    const { email, name, birth } = await request.json();
 
     const user = await prisma.user.create({
       data: {
         email,
         name,
         birth,
-        nickname,
       },
     });
 

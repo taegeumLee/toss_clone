@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
@@ -21,6 +22,16 @@ export async function POST(request: Request) {
         { status: 404 }
       );
     }
+
+    // 쿠키 설정
+    cookies().set({
+      name: "user-token",
+      value: user.id, // 실제 프로덕션에서는 JWT 토큰 등을 사용해야 합니다
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
 
     return NextResponse.json({ user }, { status: 200 });
   } catch (error) {

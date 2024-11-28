@@ -40,7 +40,7 @@ export default function LoginPage() {
       }
 
       // 로그인 성공 시 메인 페이지로 이동
-      window.location.href = "/";
+      window.location.href = "/home";
     } catch (err) {
       setError(err instanceof Error ? err.message : "오류가 발생했습니다.");
     } finally {
