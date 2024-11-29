@@ -3,12 +3,14 @@ import logo from "@/public/image/logo/Toss_Symbol_Primary.png";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { MdOutlineLogout, MdSettings } from "react-icons/md";
+import LogoutButton from "./LogoutButton";
+
 export default async function Header() {
   const userToken = cookies().get("user-token");
   if (!userToken) {
-    return notFound();
+    return null;
   }
 
   const user = await prisma.user.findUnique({
@@ -23,14 +25,14 @@ export default async function Header() {
   });
 
   if (!user) {
-    return notFound();
+    return null;
   }
 
   return (
     <div className="flex justify-between items-center p-4 f-full">
       <div className="flex items-center">
         <Image src={logo} alt="logo" width={30} height={30} />
-        <span className="text-2xl font-bold">토스 증권</span>
+        <span className="text-xl font-bold">토스 증권</span>
       </div>
       <div className="flex items-center gap-10">
         <Link href="/home">홈</Link>
@@ -64,16 +66,11 @@ export default async function Header() {
             <div className="space-y-2">
               <Link
                 href="/settings"
-                className=" text-sm text-white hover:bg-gray-700 p-2 rounded flex items-center gap-2"
+                className="text-sm text-white hover:bg-gray-700 p-2 rounded flex items-center gap-2"
               >
                 <MdSettings size={15} /> 설정
               </Link>
-              <Link
-                href="/logout"
-                className=" text-sm text-white hover:bg-gray-700 p-2 rounded flex items-center gap-2"
-              >
-                <MdOutlineLogout size={15} /> 로그아웃
-              </Link>
+              <LogoutButton />
             </div>
           </div>
         </details>
