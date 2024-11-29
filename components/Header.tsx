@@ -1,28 +1,48 @@
+"use client";
+
 import Image from "next/image";
 import logo from "@/public/image/logo/Toss_Symbol_Primary.png";
 import Link from "next/link";
-import { cookies } from "next/headers";
-import { prisma } from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
-import { MdOutlineLogout, MdSettings } from "react-icons/md";
+import { usePathname } from "next/navigation";
+import { MdSettings } from "react-icons/md";
 import LogoutButton from "./LogoutButton";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default async function Header() {
-  const userToken = cookies().get("user-token");
-  if (!userToken) {
-    return null;
-  }
+const categories = [
+  { id: "home", name: "홈", path: "/home" },
+  { id: "news", name: "뉴스", path: "/news" },
+  { id: "selectStock", name: "주식 골라보기", path: "/selectStock" },
+  { id: "myAccount", name: "내 계좌", path: "/myAccount" },
+];
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userToken.value,
-    },
-    select: {
-      profileImage: true,
-      name: true,
-      nickname: true,
-    },
-  });
+interface User {
+  profileImage: string | null;
+  name: string;
+  nickname: string | null;
+}
+
+export default function Header() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("/api/user");
+        if (!response.ok) {
+          throw new Error("사용자 정보를 가져오는데 실패했습니다");
+        }
+        const data = await response.json();
+        setUser(data.user);
+      } catch (error) {
+        console.error("사용자 정보 조회 실패:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   if (!user) {
     return null;
@@ -30,15 +50,26 @@ export default async function Header() {
 
   return (
     <div className="flex justify-between items-center p-4 f-full">
-      <div className="flex items-center">
+      <div
+        className="flex items-center cursor-pointer"
+        onClick={() => router.push("/home")}
+        role="button"
+      >
         <Image src={logo} alt="logo" width={30} height={30} />
         <span className="text-xl font-bold">토스 증권</span>
       </div>
       <div className="flex items-center gap-10">
-        <Link href="/home">홈</Link>
-        <Link href="/news">뉴스</Link>
-        <Link href="/selectStock">주식 골라보기</Link>
-        <Link href="/myAccount">내 계좌</Link>
+        {categories.map(({ id, name, path }) => (
+          <Link
+            href={path}
+            key={id}
+            className={`${
+              pathname === path ? "text-neutral-200" : "text-white/50"
+            }`}
+          >
+            {name}
+          </Link>
+        ))}
       </div>
       <div className="flex items-center gap-4 relative mr-2">
         <details className="relative">
@@ -51,6 +82,7 @@ export default async function Header() {
               className="rounded-full"
             />
           </summary>
+
           <div className="absolute top-14 right-0 bg-gray-800 rounded-lg p-4 w-48 shadow-lg">
             <div className="mb-3 flex flex-col items-center">
               <Image

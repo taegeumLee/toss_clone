@@ -80,7 +80,9 @@ export default function SubHeader() {
               >
                 <span
                   className={`text-2xl font-extrabold transition-colors duration-200 ${
-                    selectedCategory === id ? "text-white" : "text-white/50"
+                    selectedCategory === id
+                      ? "text-neutral-200"
+                      : "text-white/50"
                   }`}
                 >
                   {id}
@@ -98,7 +100,7 @@ export default function SubHeader() {
                             ? "bg-green-400"
                             : "bg-gray-500"
                         }`}
-                        animate={{ scale: [1, 1.5, 1] }}
+                        animate={{ scale: [1, 1.2, 1] }}
                         transition={{ duration: 2, repeat: Infinity }}
                       />
                       <span
@@ -126,7 +128,7 @@ export default function SubHeader() {
                 )}
                 {selectedCategory === id && (
                   <motion.div
-                    className="absolute -bottom-2 left-0 h-1 bg-white rounded-full"
+                    className="absolute -bottom-2 left-0 h-1 bg-neutral-200 rounded-full"
                     layoutId="underline"
                     transition={{ duration: 0.3 }}
                     style={{ width: "100%" }}
