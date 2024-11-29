@@ -1,5 +1,11 @@
+import FinancialAssetHeader from "@/components/financialAssetHeader";
 import SubHeader from "@/components/subHeader";
 
 export default function Home() {
-  return <SubHeader />;
+  return (
+    <>
+      <SubHeader />
+      <FinancialAssetHeader />
+    </>
+  );
 }

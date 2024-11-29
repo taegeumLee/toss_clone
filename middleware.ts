@@ -23,9 +23,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  response.headers.set("Cache-Control", "s-maxage=1, stale-while-revalidate");
+
+  return response;
 }
 
 export const config = {
-  matcher: ["/", "/home", "/login", "/register"],
+  matcher: ["/", "/home", "/login", "/register", "/api/stocks/:path*"],
 };

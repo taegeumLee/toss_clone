@@ -58,14 +58,16 @@ export default function Header() {
         <Image src={logo} alt="logo" width={30} height={30} />
         <span className="text-xl font-bold">토스 증권</span>
       </div>
-      <div className="flex items-center gap-10">
+      <div className="flex items-center gap-8">
         {categories.map(({ id, name, path }) => (
           <Link
             href={path}
             key={id}
             className={`${
-              pathname === path ? "text-neutral-200" : "text-white/50"
-            }`}
+              pathname === path
+                ? "text-neutral-200 font-extrabold"
+                : "text-white/50"
+            } transition-colors duration-200 text-lg`}
           >
             {name}
           </Link>
