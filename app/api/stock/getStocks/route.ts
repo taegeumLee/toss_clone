@@ -6,12 +6,13 @@ const POLYGON_API_KEY = process.env.POLYGON_API_KEY;
 const getStockData = unstable_cache(
   async (ticker: string) => {
     const response = await fetch(
-      `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/2023-01-01/2024-12-31?apiKey=${POLYGON_API_KEY}`
+      `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/2023-01-01/2024-12-31?apiKey=${POLYGON_API_KEY}`,
+      { next: { revalidate: 300 } }
     );
     return response.json();
   },
-  ["stock-data"],
-  { revalidate: 300 } // 5분마다 캐시 갱신
+  ["stock-data", "ticker"],
+  { revalidate: 300, tags: ["stock"] }
 );
 
 export async function GET(request: Request) {
