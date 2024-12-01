@@ -35,7 +35,7 @@ export default function FinancialAssetHeader() {
           `/api/stock/getStocks?tickers=${tickers.join(",")}`
         );
         const data = await response.json();
-
+        console.log(data);
         setStockData({
           overseas: data.slice(0, OVERSEAS_TICKERS.length),
           domestic: data.slice(OVERSEAS_TICKERS.length),
