@@ -35,10 +35,19 @@ export default function FinancialAssetHeader() {
           `/api/stock/getStocks?tickers=${tickers.join(",")}`
         );
         const data = await response.json();
-        console.log(data);
+
+        // 유효한 데이터만 필터링
+        const validData = data.filter(
+          (item: StockData) =>
+            item &&
+            item.results &&
+            item.results.length > 0 &&
+            item.status !== "ERROR"
+        );
+
         setStockData({
-          overseas: data.slice(0, OVERSEAS_TICKERS.length),
-          domestic: data.slice(OVERSEAS_TICKERS.length),
+          overseas: validData.slice(0, OVERSEAS_TICKERS.length),
+          domestic: validData.slice(OVERSEAS_TICKERS.length),
         });
       } catch (error) {
         console.error("주식 데이터 조회 실패:", error);
@@ -50,12 +59,19 @@ export default function FinancialAssetHeader() {
     fetchStockData();
   }, [market]);
 
-  const stocksToShow =
+  const stocksToShow = (
     market === "overseas"
       ? stockData.overseas
       : market === "domestic"
       ? stockData.domestic
-      : [...stockData.domestic, ...stockData.overseas];
+      : [...stockData.domestic, ...stockData.overseas]
+  ).filter(
+    (stock) =>
+      stock &&
+      stock.results &&
+      stock.results.length > 0 &&
+      stock.status !== "ERROR"
+  );
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -79,7 +95,7 @@ export default function FinancialAssetHeader() {
 
   return (
     <motion.div
-      className="w-full overflow-hidden px-4"
+      className="max-w-screen-xl mx-auto overflow-hidden px-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}

@@ -21,3 +21,8 @@ export interface StockData {
   status: string;
   ticker: string;
 }
+
+export interface RealTimeStockData extends StockData {
+  rank: number;
+  tradingAmount: number;
+}
