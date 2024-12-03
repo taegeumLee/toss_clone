@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { RealTimeStockData } from "@/types/stock";
 import TableHeader from "./TableHeader";
 import StockRow from "./StockRow";
+import LoadingRow from "./LoadingRow";
 import { useSearchParams } from "next/navigation";
 
 interface RealTimeStockTableProps {
@@ -16,17 +17,27 @@ function RealTimeStockTableContent({
   const searchParams = useSearchParams();
   const market = searchParams.get("market") || "all";
 
-  if (isLoading) {
-    return null;
-  }
-
   return (
     <div className="max-w-screen-xl mx-auto mt-4 bg-neutral-900 rounded-lg p-4">
       <TableHeader />
       <div className="divide-y divide-neutral-800/50">
-        {stocks.map((stock) => (
-          <StockRow key={stock.ticker} stock={stock} market={market} />
-        ))}
+        {isLoading ? (
+          // 로딩 상태일 때 8개의 스켈레톤 로우 표시
+          Array.from({ length: 8 }).map((_, index) => (
+            <LoadingRow key={`loading-${index}`} />
+          ))
+        ) : (
+          // 실제 데이터 표시
+          <Suspense
+            fallback={Array.from({ length: 8 }).map((_, index) => (
+              <LoadingRow key={`fallback-${index}`} />
+            ))}
+          >
+            {stocks.map((stock) => (
+              <StockRow key={stock.ticker} stock={stock} market={market} />
+            ))}
+          </Suspense>
+        )}
       </div>
     </div>
   );

@@ -43,17 +43,17 @@ export default function StockRow({ stock, market }: StockRowProps) {
       </div>
       <div
         className={`w-24 text-right ${
-          priceChange >= 0 ? "text-green-500" : "text-red-500"
+          priceChange >= 0 ? "text-red-500" : "text-blue-500"
         }`}
       >
-        {typeof priceChange === "number" ? (
-          <>
-            {priceChange >= 0 ? "+" : ""}
-            {priceChange.toFixed(2)}%
-          </>
-        ) : (
-          "-"
-        )}
+        <span
+          className={`${
+            priceChange >= 0 ? "text-red-500" : "text-blue-500"
+          } font-medium`}
+        >
+          {priceChange >= 0 ? "+" : ""}
+          {priceChange.toFixed(2)}%
+        </span>
       </div>
       <div className="w-32 text-right text-neutral-200">
         {tradingAmount ? `${(tradingAmount / 100000000).toFixed(0)}억` : "-"}

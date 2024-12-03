@@ -23,7 +23,7 @@ function StockHeader({
         <span className="text-sm text-gray-300">{companyName}</span>
         <span
           className={`text-sm ${
-            priceChange >= 0 ? "text-green-500" : "text-red-500"
+            priceChange >= 0 ? "text-red-500" : "text-blue-500"
           }`}
         >
           {priceChange >= 0 ? "+" : ""}
@@ -38,9 +38,13 @@ function StockHeader({
 interface StockGraphProps {
   data: any[];
   priceChange: number;
+  colors: {
+    positive: string;
+    negative: string;
+  };
 }
 
-function StockGraph({ data, priceChange }: StockGraphProps) {
+function StockGraph({ data, priceChange, colors }: StockGraphProps) {
   return (
     <div className="w-full h-24">
       <Chart
@@ -55,7 +59,7 @@ function StockGraph({ data, priceChange }: StockGraphProps) {
           stroke: {
             curve: "smooth",
             width: 2,
-            colors: [priceChange >= 0 ? "#22c55e" : "#ef4444"],
+            colors: [priceChange >= 0 ? colors.negative : colors.positive],
           },
           tooltip: { enabled: false },
           grid: {
@@ -112,7 +116,14 @@ export default function StockChartItem({
           priceChange={priceChange}
           priceDisplay={priceDisplay}
         />
-        <StockGraph data={stock.results.slice(-30)} priceChange={priceChange} />
+        <StockGraph
+          data={stock.results.slice(-30)}
+          priceChange={priceChange}
+          colors={{
+            positive: "#ef4444", // red-500
+            negative: "#3b82f6", // blue-500
+          }}
+        />
       </div>
     </div>
   );

@@ -67,7 +67,7 @@ function StockChartItem({
             <span className="text-sm text-gray-300">{companyName}</span>
             <span
               className={`text-sm ${
-                priceChange >= 0 ? "text-green-500" : "text-red-500"
+                priceChange >= 0 ? "text-red-500" : "text-blue-500"
               }`}
             >
               {priceChange >= 0 ? "+" : ""}
@@ -90,7 +90,7 @@ function StockChartItem({
               stroke: {
                 curve: "smooth",
                 width: 2,
-                colors: [priceChange >= 0 ? "#22c55e" : "#ef4444"],
+                colors: [priceChange >= 0 ? "#ef4444" : "#3b82f6"],
               },
               tooltip: { enabled: false },
               grid: {
