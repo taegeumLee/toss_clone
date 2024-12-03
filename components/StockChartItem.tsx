@@ -1,5 +1,4 @@
 import { StockData } from "@/types/stock";
-import { useStockInfo } from "@/hooks/useStockInfo";
 import dynamic from "next/dynamic";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
@@ -95,10 +94,14 @@ export default function StockChartItem({
   stock: StockData;
   market: string;
 }) {
-  const { priceChange, currentPrice, priceDisplay, companyName } = useStockInfo(
-    stock,
-    market
-  );
+  const lastResult = stock.results[stock.results.length - 1];
+  const firstResult = stock.results[0];
+  const priceChange = ((lastResult.c - firstResult.o) / firstResult.o) * 100;
+  const priceDisplay =
+    market === "domestic"
+      ? `${lastResult.c.toLocaleString()}원`
+      : `$${lastResult.c.toLocaleString()}`;
+  const companyName = stock.ticker;
 
   return (
     <div className="bg-neutral-800 p-3 rounded-xl mt-6">

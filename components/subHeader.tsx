@@ -13,19 +13,22 @@ export default function SubHeader() {
   const [currentTime, setCurrentTime] = useState<string>(
     new Date().getHours().toString()
   );
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date().getHours().toString());
 
-      setDomesticPing(
-        parseInt(currentTime) >= 9 && parseInt(currentTime) <= 15
-      );
-      setOverseasPing(
-        parseInt(currentTime) >= 10 || parseInt(currentTime) <= 6
-      );
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const checkOverseasMarketStatus = (hour: number) => {
+    // 프리마켓 (한국시간 18:00 - 23:30)
+    if (hour >= 18 && hour < 23.5) {
+      return "프리마켓";
+    }
+    // 데이 마켓 (한국시간 23:30 - 06:00)
+    else if (hour >= 10 || hour < 18) {
+      return "데이 마켓";
+    }
+    // 애프터 마켓 (한국시간 06:00 - 10:00)
+    else if (hour >= 6 && hour < 10) {
+      return "애프터 마켓";
+    }
+    return "장 닫힘";
+  };
 
   const [domesticPing, setDomesticPing] = useState<boolean>(false);
   const [overseasPing, setOverseasPing] = useState<boolean>(false);
@@ -58,6 +61,22 @@ export default function SubHeader() {
     hidden: { opacity: 0, y: -10 },
     visible: { opacity: 1, y: 0 },
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const currentHour = now.getHours();
+      setCurrentTime(currentHour.toString());
+
+      // 국내 장 시간 (09:00 - 15:30)
+      setDomesticPing(currentHour >= 9 && currentHour < 15.5);
+
+      // 해외 장 상태
+      const overseasStatus = checkOverseasMarketStatus(currentHour);
+      setOverseasPing(overseasStatus !== "장 닫힘");
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="max-w-screen-xl mx-auto flex flex-col px-8 pt-14">
@@ -118,11 +137,9 @@ export default function SubHeader() {
                     <span className="text-sm text-white/50">
                       {id === "국내"
                         ? domesticPing
-                          ? "장 열림"
+                          ? "정규장"
                           : "장 닫힘"
-                        : overseasPing
-                        ? "장 열림"
-                        : "장 닫힘"}
+                        : checkOverseasMarketStatus(parseInt(currentTime))}
                     </span>
                   </div>
                 )}

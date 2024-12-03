@@ -21,7 +21,7 @@ function RealTimeStockTableContent({
   }
 
   return (
-    <div className="mt-4 bg-neutral-900 rounded-lg p-4">
+    <div className="max-w-screen-xl mx-auto mt-4 bg-neutral-900 rounded-lg p-4">
       <TableHeader />
       <div className="divide-y divide-neutral-800/50">
         {stocks.map((stock) => (

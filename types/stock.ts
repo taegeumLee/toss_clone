@@ -1,28 +1,25 @@
-export interface DailyStockData {
-  c: number; //close
-  h: number; //high
-  l: number; //low
-  n: number; //number of transactions
-  o: number; //open
-  t: number; //timestamp
-  v: number; //volume
-  vw: number;
+export interface StockResult {
+  c: number; // 종가
+  h: number; // 고가
+  l: number; // 저가
+  o: number; // 시가
+  t: number; // 타임스탬프
+  v: number; // 거래량
+  vw: number; // 거래대금
 }
 
 export interface StockData {
+  ticker: string;
+  results: StockResult[];
+  status: "OK" | "ERROR";
   adjusted: boolean;
   next_url: string;
   queryCount: number;
   request_id: string;
-
-  results: DailyStockData[];
-
   results_count: number;
-  status: string;
-  ticker: string;
 }
 
 export interface RealTimeStockData extends StockData {
-  rank: number;
-  tradingAmount: number;
+  rank?: number;
+  tradingAmount?: number;
 }

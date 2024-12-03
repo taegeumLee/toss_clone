@@ -1,32 +1,35 @@
-import { StockData } from "@/types/stock";
-import { COMPANY_NAMES } from "@/constants/stockTickers";
+import { RealTimeStockData } from "@/types/stock";
 
-export function useStockInfo(stock: StockData, market: string) {
+export function useStockInfo(stock: RealTimeStockData, market: string) {
   if (!stock?.results?.length) {
     return {
       priceChange: 0,
-      currentPrice: "0",
-      priceDisplay: "0",
-      companyName: "",
+      priceDisplay: "-",
+      companyName: "-",
     };
   }
 
-  const monthlyData = stock.results.slice(-30);
-  const lastPrice = monthlyData[monthlyData.length - 1].c;
-  const firstPrice = monthlyData[0].c;
-  const priceChange = ((lastPrice - firstPrice) / firstPrice) * 100;
-  const currentPrice = lastPrice.toLocaleString("ko-KR", {
-    maximumFractionDigits: 2,
-  });
+  const lastResult = stock.results[stock.results.length - 1];
+  const firstResult = stock.results[0];
 
-  const priceDisplay =
-    market === "domestic" ? `${currentPrice}원` : `$${currentPrice}`;
+  // 가격 변화율 계산
+  const priceChange =
+    firstResult && lastResult
+      ? ((lastResult.c - firstResult.o) / firstResult.o) * 100
+      : 0;
 
-  const companyName = COMPANY_NAMES[stock.ticker] || stock.ticker;
+  // 현재가 표시
+  const priceDisplay = lastResult?.c
+    ? market === "domestic"
+      ? `${lastResult.c.toLocaleString()}원`
+      : `$${lastResult.c.toLocaleString()}`
+    : "-";
+
+  // 회사명 (임시로 티커로 대체)
+  const companyName = stock.ticker;
 
   return {
     priceChange,
-    currentPrice,
     priceDisplay,
     companyName,
   };

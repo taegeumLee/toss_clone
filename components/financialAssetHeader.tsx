@@ -2,96 +2,61 @@
 
 import { useSearchParams } from "next/navigation";
 import { DOMESTIC_TICKERS, OVERSEAS_TICKERS } from "@/constants/stockTickers";
-import { useEffect, useState, useRef } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { StockData } from "@/types/stock";
 import { motion } from "framer-motion";
 import StockChart from "./StockChart";
+import { useStockData } from "@/hooks/useStockData";
+import { useDraggable } from "@/hooks/useDraggable";
 
-export default function FinancialAssetHeader() {
+interface FinancialAssetHeaderProps {
+  initialData: StockData[];
+}
+
+export default function FinancialAssetHeader({
+  initialData,
+}: FinancialAssetHeaderProps) {
   const searchParams = useSearchParams();
   const market = searchParams.get("market") || "all";
-  const [stockData, setStockData] = useState<{
-    overseas: StockData[];
-    domestic: StockData[];
-  }>({ overseas: [], domestic: [] });
-  const [isLoading, setIsLoading] = useState(true);
+  const { stocks: stockData, isLoading, isError } = useStockData(initialData);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+
+  // 드래그 로직을 커스텀 훅으로 분리
+  const { isDragging, handleMouseDown, handleMouseUp, handleMouseMove } =
+    useDraggable(containerRef);
+
+  // 필터링 로직을 useMemo로 최적화
+  const filteredStocks = useMemo(() => {
+    if (!Array.isArray(stockData)) return [];
+
+    return stockData.filter((stock): stock is StockData => {
+      if (!stock || !Array.isArray(stock.results) || stock.status === "ERROR") {
+        return false;
+      }
+
+      if (market === "overseas") {
+        return OVERSEAS_TICKERS.includes(stock.ticker);
+      }
+      if (market === "domestic") {
+        return DOMESTIC_TICKERS.includes(stock.ticker);
+      }
+      return true;
+    });
+  }, [stockData, market]);
 
   useEffect(() => {
-    const fetchStockData = async () => {
-      setIsLoading(true);
-      try {
-        const tickers =
-          market === "overseas"
-            ? OVERSEAS_TICKERS
-            : market === "domestic"
-            ? DOMESTIC_TICKERS
-            : [...DOMESTIC_TICKERS, ...OVERSEAS_TICKERS];
+    console.log("Stock Data:", stockData);
+    console.log("Loading:", isLoading);
+    console.log("Error:", isError);
+  }, [stockData, isLoading, isError]);
 
-        const response = await fetch(
-          `/api/stock/getStocks?tickers=${tickers.join(",")}`
-        );
-        const data = await response.json();
-
-        // 유효한 데이터만 필터링
-        const validData = data.filter(
-          (item: StockData) =>
-            item &&
-            item.results &&
-            item.results.length > 0 &&
-            item.status !== "ERROR"
-        );
-
-        setStockData({
-          overseas: validData.slice(0, OVERSEAS_TICKERS.length),
-          domestic: validData.slice(OVERSEAS_TICKERS.length),
-        });
-      } catch (error) {
-        console.error("주식 데이터 조회 실패:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchStockData();
-  }, [market]);
-
-  const stocksToShow = (
-    market === "overseas"
-      ? stockData.overseas
-      : market === "domestic"
-      ? stockData.domestic
-      : [...stockData.domestic, ...stockData.overseas]
-  ).filter(
-    (stock) =>
-      stock &&
-      stock.results &&
-      stock.results.length > 0 &&
-      stock.status !== "ERROR"
-  );
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setStartX(e.pageX - (containerRef.current?.offsetLeft || 0));
-    setScrollLeft(containerRef.current?.scrollLeft || 0);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    if (!containerRef.current) return;
-
-    const x = e.pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    containerRef.current.scrollLeft = scrollLeft - walk;
-  };
+  if (isError) {
+    return (
+      <div className="text-red-500 text-center py-4">
+        데이터를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -102,27 +67,39 @@ export default function FinancialAssetHeader() {
     >
       <div
         ref={containerRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+        className={`
+          flex gap-4 overflow-x-auto scrollbar-hide
+          ${isDragging ? "cursor-grabbing" : "cursor-grab"}
+          transition-all duration-200
+        `}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onMouseMove={handleMouseMove}
       >
-        {stocksToShow.map((stock, index) => (
-          <motion.div
-            key={`${stock.ticker}-${index}`}
-            className="min-w-[calc(33.333% - 1rem)]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <StockChart
-              stocks={[stock]}
-              isLoading={isLoading}
-              market={market}
-            />
-          </motion.div>
-        ))}
+        {isLoading
+          ? // 로딩 스켈레톤 UI 추가
+            Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={`skeleton-${index}`}
+                className="min-w-[calc(33.333% - 1rem)] h-48 bg-neutral-800 rounded-xl animate-pulse"
+              />
+            ))
+          : filteredStocks.map((stock: StockData, index: number) => (
+              <motion.div
+                key={stock.ticker}
+                className="min-w-[calc(33.333% - 1rem)]"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <StockChart
+                  stocks={[stock]}
+                  isLoading={isLoading}
+                  market={market}
+                />
+              </motion.div>
+            ))}
       </div>
     </motion.div>
   );
