@@ -3,14 +3,15 @@
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import SideBar from "./components/sideBar";
+import Footer from "./components/footer";
 import { useState } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="bg-neutral-900 min-h-screen">
-      <div className="flex">
+    <div className="bg-neutral-900 min-h-screen ">
+      <div className="flex ">
         <motion.div
           className="flex-1"
           animate={{
@@ -24,6 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           <Header />
           {children}
+          <Footer />
         </motion.div>
         <SideBar onOpenChange={setIsSidebarOpen} />
       </div>
