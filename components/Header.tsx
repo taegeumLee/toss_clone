@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 const categories = [
   { id: "home", name: "홈", path: "/home" },
   { id: "news", name: "뉴스", path: "/news" },
-  { id: "selectStock", name: "주식 골라보기", path: "/selectStock" },
+  { id: "selectStock", name: "주식 골라보기", path: "/explore" },
   { id: "myAccount", name: "내 계좌", path: "/myAccount" },
 ];
 
