@@ -49,7 +49,7 @@ export default function Header() {
   }
 
   return (
-    <div className="flex justify-between relative items-center p-4 f-full">
+    <div className="flex justify-between relative items-center pt-3 f-full max-w-screen-xl mx-auto px-4">
       <div
         className="flex items-center cursor-pointer"
         onClick={() => router.push("/home")}
@@ -73,7 +73,7 @@ export default function Header() {
           </Link>
         ))}
       </div>
-      <div className="flex items-center gap-4 mr-2">
+      <div className="flex items-center gap-4 ">
         <details className="relative">
           <summary className="bg-gray-800 rounded-full p-1 cursor-pointer list-none">
             <Image
@@ -85,7 +85,7 @@ export default function Header() {
             />
           </summary>
 
-          <div className="absolute top-14 right-0 bg-gray-800 rounded-lg p-4 w-48 shadow-lg">
+          <div className="absolute top-14 right-0 z-10 bg-gray-800 rounded-lg p-4 w-48 shadow-lg">
             <div className="mb-3 flex flex-col items-center">
               <Image
                 src={user.profileImage || logo}

@@ -18,7 +18,7 @@ function RealTimeStockTableContent({
   const market = searchParams.get("market") || "all";
 
   return (
-    <div className="max-w-screen-xl mx-auto mt-4 bg-neutral-900 rounded-lg p-4">
+    <div className="max-w-screen-xl mx-auto mt-2 bg-neutral-900 rounded-lg p-4">
       <TableHeader />
       <div className="divide-y divide-neutral-800/50">
         {isLoading ? (

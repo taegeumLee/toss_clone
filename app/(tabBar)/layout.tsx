@@ -10,7 +10,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="bg-neutral-900 min-h-screen">
-      <Header />
       <div className="flex">
         <motion.div
           className="flex-1"
@@ -23,6 +22,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             damping: 30,
           }}
         >
+          <Header />
           {children}
         </motion.div>
         <SideBar onOpenChange={setIsSidebarOpen} />

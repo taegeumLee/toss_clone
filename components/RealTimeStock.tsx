@@ -36,6 +36,7 @@ const filterByMarket = (ticker: string, market: string): boolean => {
 };
 
 export default function RealTimeStock({ initialData }: RealTimeStockProps) {
+  const date = new Date();
   const { stocks, isLoading, isError } = useStockData(initialData);
   const searchParams = useSearchParams();
   const market = searchParams.get("market") || "all";
@@ -54,7 +55,14 @@ export default function RealTimeStock({ initialData }: RealTimeStockProps) {
   }
 
   return (
-    <motion.div>
+    <motion.div className="max-w-screen-xl mx-auto mt-8 px-4">
+      <span className="ml-5 text-neutral-200 text-xl font-bold gap-2 flex items-center">
+        실시간 차트{" "}
+        <span className="text-white/50 text-sm">
+          {date.getMonth() + 1}/{date.getDate()} {date.getHours()}:
+          {date.getMinutes()} 기준
+        </span>
+      </span>
       <RealTimeStockTable stocks={filteredStocks} isLoading={isLoading} />
     </motion.div>
   );

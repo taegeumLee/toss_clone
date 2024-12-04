@@ -81,7 +81,7 @@ export default function SideBar({ onOpenChange }: SideBarProps) {
                 }
               }}
               key={index}
-              className={`flex items-center flex-col justify-center cursor-pointer gap-1 hover:text-neutral-200 hover:bg-neutral-700 rounded-md text-neutral-400 transition-colors ${
+              className={`flex items-center flex-col justify-center cursor-pointer gap-1 hover:text-neutral-200 p-1 hover:bg-neutral-700 rounded-md text-neutral-400 transition-colors ${
                 selected === item.text ? "*:text-white" : ""
               }`}
             >
