@@ -5,7 +5,7 @@ import { DOMESTIC_TICKERS, OVERSEAS_TICKERS } from "@/constants/stockTickers";
 import { useRef, useMemo, useEffect } from "react";
 import { StockData } from "@/types/stock";
 import { motion } from "framer-motion";
-import StockChart from "./StockChart";
+import StockChart from "../stock/StockChart";
 import { useStockData } from "@/hooks/useStockData";
 import { useDraggable } from "@/hooks/useDraggable";
 

@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { Suspense } from "react";
 import { StockData } from "@/types/stock";
-import FinancialAssetHeader from "@/components/financialAssetHeader";
-import RealTimeStock from "@/components/RealTimeStock";
+import FinancialAssetHeader from "@/components/layout/financialAssetHeader";
+import RealTimeStock from "@/components/stock/RealTimeStockTable/RealTimeStock";
 import LoadingSkeleton from "./components/LoadingSkeleton";
 
 interface ClientHomeProps {

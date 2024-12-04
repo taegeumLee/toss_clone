@@ -1,30 +1,34 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import SideBar from "./components/sideBar";
 import Footer from "./components/footer";
 import { useState, useEffect } from "react";
 import LoadingSkeleton from "./components/LoadingSkeleton";
+import { ANIMATION_VARIANTS } from "@/constants/styles";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      setIsPageLoading(false);
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
-  if (isLoading) {
-    return <LoadingSkeleton />;
-  }
+  if (isPageLoading) return <LoadingSkeleton />;
 
   return (
     <div className="bg-neutral-900 min-h-screen overflow-y-auto scrollbar-hide">
-      <div className="flex">
+      <motion.div
+        className="flex"
+        variants={ANIMATION_VARIANTS.container}
+        initial="hidden"
+        animate="show"
+      >
         <motion.div
           className="flex-1"
           animate={{
@@ -41,7 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Footer />
         </motion.div>
         <SideBar onOpenChange={setIsSidebarOpen} />
-      </div>
+      </motion.div>
     </div>
   );
 }

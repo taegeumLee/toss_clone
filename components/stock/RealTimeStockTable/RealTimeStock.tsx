@@ -3,11 +3,11 @@
 import { motion } from "framer-motion"; // 애니메이션 효과를 위한 모듈
 import { useState, useMemo } from "react"; // React 훅
 import { useSearchParams } from "next/navigation"; // URL 검색 매개변수 사용을 위한 훅
-import RealTimeStockTable from "./RealTimeStockTable"; // 주식 테이블 컴포넌트
+import RealTimeStockTable from "."; // 주식 테이블 컴포넌트
 import { RealTimeStockData, StockData } from "@/types/stock"; // 주식 데이터 타입
 import { DOMESTIC_TICKERS, OVERSEAS_TICKERS } from "@/constants/stockTickers"; // 주식 티커 상수
 import { useStockData } from "@/hooks/useStockData"; // 주식 데이터 로딩 훅
-import ErrorMessage from "./ErrorMessage"; // 에러 메시지 컴포넌트
+import ErrorMessage from "../../common/ErrorMessage"; // 에러 메시지 컴포넌트
 
 interface RealTimeStockProps {
   initialData: StockData[]; // 초기 주식 데이터

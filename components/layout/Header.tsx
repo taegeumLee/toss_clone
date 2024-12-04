@@ -5,7 +5,7 @@ import logo from "@/public/image/logo/Toss_Symbol_Primary.png";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MdSettings } from "react-icons/md";
-import LogoutButton from "./LogoutButton";
+import LogoutButton from "../common/LogoutButton";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 

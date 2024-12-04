@@ -5,8 +5,8 @@ import { useState, FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import tossLogo from "@/public/image/logo/Toss_Symbol_Primary.png";
-import Button from "@/components/button";
-import Input from "@/components/input";
+import Button from "@/components/common/button";
+import Input from "@/components/common/input";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

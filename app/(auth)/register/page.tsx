@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import Image from "next/image";
 import tossLogo from "@/public/image/logo/Toss_Symbol_Primary.png";
-import Input from "@/components/input";
-import Button from "@/components/button";
+import Input from "@/components/common/input";
+import Button from "@/components/common/button";
 import {
   validateEmail,
   validateVerificationCode,

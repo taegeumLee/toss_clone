@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
-import SubHeader from "@/components/subHeader";
+import SubHeader from "@/components/layout/subHeader";
 import { getStockData } from "@/lib/stock";
 import { DOMESTIC_TICKERS, OVERSEAS_TICKERS } from "@/constants/stockTickers";
 import ClientHome from "./ClientHome";

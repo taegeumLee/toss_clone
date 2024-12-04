@@ -1,6 +1,6 @@
 "use client";
 
-import LoadingRow from "@/components/RealTimeStockTable/LoadingRow";
+import LoadingRow from "@/components/layout/LoadingRow";
 
 export default function LoadingSkeleton() {
   return (

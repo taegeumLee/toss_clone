@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { RealTimeStockData } from "@/types/stock";
 import TableHeader from "./TableHeader";
 import StockRow from "./StockRow";
-import LoadingRow from "./LoadingRow";
+import LoadingRow from "../../layout/LoadingRow";
 import { useSearchParams } from "next/navigation";
 
 interface RealTimeStockTableProps {
