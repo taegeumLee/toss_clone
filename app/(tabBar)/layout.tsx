@@ -5,21 +5,11 @@ import Header from "@/components/layout/Header";
 import SideBar from "./components/sideBar";
 import Footer from "./components/footer";
 import { useState, useEffect } from "react";
-import LoadingSkeleton from "./components/LoadingSkeleton";
+import LoadingSkeleton from "./components//LoadingSkeleton";
 import { ANIMATION_VARIANTS } from "@/constants/styles";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isPageLoading, setIsPageLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsPageLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isPageLoading) return <LoadingSkeleton />;
 
   return (
     <div className="bg-neutral-900 min-h-screen overflow-y-auto scrollbar-hide">

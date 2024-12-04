@@ -11,10 +11,17 @@ export function middleware(request: NextRequest) {
   }
 
   // 인증이 필요한 경로들
-  const protectedPaths = ["/home"];
+  const protectedPaths = [
+    "/home",
+    "/news",
+    "/explore",
+    "/myAccount",
+    "/stock",
+    "/settings",
+  ];
 
   // 로그인하지 않은 사용자가 보호된 경로에 접근하려고 할 때
-  if (!isLoggedIn && protectedPaths.includes(pathname)) {
+  if (!isLoggedIn && protectedPaths.some((path) => pathname.startsWith(path))) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -25,11 +32,26 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
 
-  response.headers.set("Cache-Control", "s-maxage=1, stale-while-revalidate");
+  // 캐시 제어 헤더 설정
+  response.headers.set(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
 
   return response;
 }
 
 export const config = {
-  matcher: ["/", "/home", "/login", "/register", "/api/stocks/:path*"],
+  matcher: [
+    "/",
+    "/home",
+    "/login",
+    "/register",
+    "/news",
+    "/explore",
+    "/myAccount",
+    "/stock/:path*",
+    "/settings",
+    "/api/:path*",
+  ],
 };
