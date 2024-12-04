@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body>
+      <body className="bg-neutral-900">
         {children}
         {modal}
       </body>
