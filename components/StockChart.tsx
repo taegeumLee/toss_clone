@@ -64,7 +64,7 @@ function StockChartItem({
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-lg font-bold text-white">{stock.ticker}</span>
-            <span className="text-sm text-gray-300">{companyName}</span>
+            <span className="text-sm text-white/50">{companyName}</span>
             <span
               className={`text-sm ${
                 priceChange >= 0 ? "text-red-500" : "text-blue-500"

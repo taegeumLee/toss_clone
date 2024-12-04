@@ -49,7 +49,7 @@ export default function Header() {
   }
 
   return (
-    <div className="flex justify-between items-center p-4 f-full">
+    <div className="flex justify-between relative items-center p-4 f-full">
       <div
         className="flex items-center cursor-pointer"
         onClick={() => router.push("/home")}
@@ -73,7 +73,7 @@ export default function Header() {
           </Link>
         ))}
       </div>
-      <div className="flex items-center gap-4 relative mr-2">
+      <div className="flex items-center gap-4 mr-2">
         <details className="relative">
           <summary className="bg-gray-800 rounded-full p-1 cursor-pointer list-none">
             <Image
