@@ -1,5 +1,6 @@
 import { useStockInfo } from "@/hooks/useStockInfo";
 import { RealTimeStockData } from "@/types/stock";
+import { useRouter } from "next/navigation";
 
 interface StockRowProps {
   stock: RealTimeStockData;
@@ -7,10 +8,15 @@ interface StockRowProps {
 }
 
 export default function StockRow({ stock, market }: StockRowProps) {
+  const router = useRouter();
   const { priceChange, priceDisplay, companyName } = useStockInfo(
     stock,
     market
   );
+
+  const handleClick = () => {
+    router.push(`/stock/${stock.ticker}`);
+  };
 
   if (!stock?.results?.length) {
     console.error("Invalid stock data:", stock);
@@ -28,7 +34,10 @@ export default function StockRow({ stock, market }: StockRowProps) {
   const tradingAmount = lastResult.v * lastResult.vw;
 
   return (
-    <div className="flex items-center py-2 hover:bg-neutral-800/50 transition-colors cursor-pointer text-sm">
+    <div
+      className="flex items-center py-2 hover:bg-neutral-800/50 transition-colors cursor-pointer text-sm"
+      onClick={handleClick}
+    >
       <div className="w-12 text-center text-neutral-500">
         {stock.rank || "-"}
       </div>
