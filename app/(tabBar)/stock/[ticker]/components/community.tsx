@@ -112,9 +112,7 @@ export default function Community({ ticker }: { ticker: string }) {
         nickname: user.nickname,
         profileImage: user.profileImage,
       },
-      _count: {
-        likes: 0,
-      },
+      likes: [], // likes 배열 추가
       comments: [],
     };
 

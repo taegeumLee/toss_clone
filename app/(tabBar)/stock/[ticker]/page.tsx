@@ -20,7 +20,7 @@ export default function StockDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const [selectedTab, setSelectedTab] = useState(TABS[3]);
+  const [selectedTab, setSelectedTab] = useState(TABS[0]);
 
   function handleTabClick(tab: string) {
     setSelectedTab(tab);

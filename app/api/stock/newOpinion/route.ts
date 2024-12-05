@@ -32,11 +32,7 @@ export async function POST(req: NextRequest) {
         },
       },
       comments: true,
-      _count: {
-        select: {
-          likes: true,
-        },
-      },
+      likes: true, // likes 추가
     },
   });
   return NextResponse.json({ newOpinion }, { status: 200 });
