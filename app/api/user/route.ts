@@ -18,6 +18,7 @@ export async function GET() {
         id: userToken.value,
       },
       select: {
+        id: true,
         profileImage: true,
         name: true,
         nickname: true,

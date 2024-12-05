@@ -38,10 +38,23 @@ export default function StockDetailChart({ data }: StockDetailChartProps) {
         type: "candlestick",
         height: 500,
         background: "transparent",
+
         toolbar: { show: false },
         animations: {
           enabled: false,
         },
+      },
+      plotOptions: {
+        candlestick: {
+          colors: {
+            upward: "#3b82f6", // blue-500
+            downward: "#ef4444", // red-500
+          },
+        },
+      },
+      stroke: {
+        curve: "smooth",
+        width: 1,
       },
       xaxis: {
         type: "datetime",
@@ -86,12 +99,12 @@ export default function StockDetailChart({ data }: StockDetailChartProps) {
         ))}
       </div>
 
-      {/* <Chart
+      <Chart
         options={chartOptions}
         series={[{ data: chartData }]}
         type="candlestick"
         height={500}
-      /> */}
+      />
     </div>
   );
 }

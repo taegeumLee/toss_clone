@@ -14,12 +14,57 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   profileImage String?
   name         String
   birth        String
   nickname     String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  opinions     Opinion[]
+  comments     Comment[]
+  likes        Like[]
+}
+
+model Stock {
+  id        String    @id @default(cuid())
+  ticker    String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  opinions  Opinion[]
+}
+
+model Opinion {
+  id        String    @id @default(cuid())
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  stock     Stock     @relation(fields: [stockId], references: [id])
+  stockId   String
+  comments  Comment[]
+  likes     Like[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  opinion   Opinion  @relation(fields: [opinionId], references: [id])
+  opinionId String
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  opinion   Opinion  @relation(fields: [opinionId], references: [id])
+  opinionId String
 }

@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import SideBar from "./components/sideBar";
 import Footer from "./components/footer";
-import { useState, useEffect } from "react";
-import LoadingSkeleton from "./components//LoadingSkeleton";
+import { useState } from "react";
 import { ANIMATION_VARIANTS } from "@/constants/styles";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
