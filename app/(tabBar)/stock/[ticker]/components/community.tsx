@@ -2,21 +2,20 @@
 
 interface OpinionWithUser extends Opinion {
   user: User;
-  _count: {
-    likes: number;
-  };
+  likes: Like[];
   comments: Comment[];
 }
 
-import { Opinion, User, Comment } from "@prisma/client";
+import { Opinion, User, Comment, Like } from "@prisma/client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import logo from "@/public/image/logo/Toss_Symbol_Primary.png";
 import { TbDotsVertical } from "react-icons/tb";
 import { FaHeart } from "react-icons/fa";
 import { IoChatbox } from "react-icons/io5";
 import { BsFillPencilFill } from "react-icons/bs";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { motion } from "framer-motion";
 
 export default function Community({ ticker }: { ticker: string }) {
   const [user, setUser] = useState<User | null>(null);
@@ -25,31 +24,47 @@ export default function Community({ ticker }: { ticker: string }) {
   const [selectedOpinion, setSelectedOpinion] =
     useState<OpinionWithUser | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    const fetchComments = async () => {
-      const response = await fetch(`/api/stock/getOpinion?ticker=${ticker}`);
-      const data = await response.json();
-      setOpinions(data);
-    };
-    fetchComments();
-  }, [ticker]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const filteredOpinions = useMemo(() => {
+    return opinions.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }, [opinions]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("/api/user");
-        if (!response.ok) {
-          throw new Error("사용자 정보를 가져오는데 실패했습니다");
+        setIsLoading(true);
+        const [opinionsResponse, userResponse] = await Promise.all([
+          fetch(`/api/stock/getOpinion?ticker=${ticker}`),
+          fetch("/api/user"),
+        ]);
+
+        if (!opinionsResponse.ok || !userResponse.ok) {
+          throw new Error("데이터를 불러오는데 실패했습니다");
         }
-        const data = await response.json();
-        setUser(data.user);
+
+        const [opinionsData, userData] = await Promise.all([
+          opinionsResponse.json(),
+          userResponse.json(),
+        ]);
+
+        setOpinions(opinionsData);
+        setUser(userData.user);
       } catch (error) {
-        console.error("사용자 정보 조회 실패:", error);
+        setError(
+          error instanceof Error ? error.message : "오류가 발생했습니다"
+        );
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchUserData();
-  }, []);
+    fetchData();
+  }, [ticker]);
 
   if (!user) {
     return null;
@@ -127,7 +142,7 @@ export default function Community({ ticker }: { ticker: string }) {
       setSelectedOpinion(null);
     } catch (error) {
       console.error("의견 삭제 중 오류 발생:", error);
-      alert("의견을 삭제하는 중 오류가 발생했습니다.");
+      alert("의견을 삭제하는 중 오류가 발생했습니.");
     }
   };
 
@@ -141,10 +156,59 @@ export default function Community({ ticker }: { ticker: string }) {
     }
   };
 
+  const handleLike = async (opinionId: string) => {
+    const isLiked = opinions
+      .find((opinion) => opinion.id === opinionId)
+      ?.likes.some((like) => like.userId === user.id);
+    const optimisticUpdate = (prevOpinions: OpinionWithUser[]) => {
+      return prevOpinions.map((opinion) => {
+        if (opinion.id !== opinionId) return opinion;
+
+        const isLiked = opinion.likes.some((like) => like.userId === user.id);
+        const updatedLikes = isLiked
+          ? opinion.likes.filter((like) => like.userId !== user.id)
+          : [
+              ...opinion.likes,
+              {
+                id: `temp-${Date.now()}`,
+                userId: user.id,
+                opinionId,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            ];
+
+        return { ...opinion, likes: updatedLikes };
+      });
+    };
+
+    try {
+      setOpinions(optimisticUpdate);
+
+      const response = await fetch(`/api/stock/likeOpinion`, {
+        method: isLiked ? "DELETE" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, opinionId }),
+      });
+
+      if (!response.ok) throw new Error("좋아요 처리 실패");
+    } catch (error) {
+      // 실패 시 원래 상태로 복구
+      setOpinions((prevOpinions) =>
+        prevOpinions.map((opinion) =>
+          opinion.id === opinionId
+            ? opinions.find((o) => o.id === opinionId)!
+            : opinion
+        )
+      );
+      console.error("좋아요 처리 중 오류:", error);
+    }
+  };
+
   return (
     <div className="flex gap-4">
       <div className="flex flex-col bg-neutral-800 p-4 rounded-lg w-3/4 gap-4">
-        <span className="text-lg font-medium">{ticker} 커뮤니티</span>
+        <span className="text-2xl font-medium">{ticker} 커뮤니티</span>
         <div className="flex gap-2">
           <div className="flex flex-col items-center gap-2 w-1/10">
             <Image
@@ -202,16 +266,41 @@ export default function Community({ ticker }: { ticker: string }) {
               {/* 좋아요 댓글 */}
               <div className="flex p-1 justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <FaHeart
-                      className={`text-neutral-500 ${
-                        opinion._count.likes === 0 ? "opacity-50" : ""
-                      }`}
-                    />
-                    <span className="text-xs text-neutral-500">
-                      {opinion._count.likes}
-                    </span>
-                  </div>
+                  <motion.div
+                    className="flex items-center gap-1"
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <motion.div
+                      initial={{ scale: 1 }}
+                      whileHover={{ scale: 1.1 }}
+                      animate={
+                        opinion.likes.some((like) => like.userId === user.id)
+                          ? {
+                              scale: [1, 1.2, 1],
+                              transition: { duration: 0.3 },
+                            }
+                          : {}
+                      }
+                    >
+                      <FaHeart
+                        onClick={() => handleLike(opinion.id)}
+                        className={`cursor-pointer transition-all duration-200 ${
+                          opinion.likes.some((like) => like.userId === user.id)
+                            ? "text-red-500 hover:text-red-600"
+                            : "text-neutral-500 hover:text-neutral-200"
+                        }`}
+                      />
+                    </motion.div>
+                    <motion.span
+                      className="text-xs text-neutral-500"
+                      initial={{ opacity: 1 }}
+                      animate={{ opacity: 1 }}
+                      key={opinion.likes.length}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {opinion.likes.length}
+                    </motion.span>
+                  </motion.div>
                   <div className="flex items-center gap-1">
                     <IoChatbox
                       className={`text-neutral-500 ${
