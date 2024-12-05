@@ -9,36 +9,35 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "티커가 필요합니다" }, { status: 400 });
   }
 
-  const stock = await prisma.stock.findUnique({
-    where: {
-      ticker: ticker,
-    },
-  });
-  if (!stock) {
-    return NextResponse.json(
-      { error: "존재하지 않는 종목입니다" },
-      { status: 404 }
-    );
-  }
-
-  const opinions = await prisma.opinion.findMany({
-    where: {
-      stockId: stock.id,
-    },
-    include: {
-      user: {
-        select: {
-          id: true,
-          nickname: true,
-          profileImage: true,
+  try {
+    const opinions = await prisma.opinion.findMany({
+      where: {
+        stock: {
+          ticker: ticker,
         },
       },
-      comments: true,
-      likes: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  return NextResponse.json(opinions);
+      include: {
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            profileImage: true,
+          },
+        },
+        comments: true,
+        likes: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return NextResponse.json(opinions);
+  } catch (error) {
+    console.error("의견 조회 중 오류:", error);
+    return NextResponse.json(
+      { error: "의견을 불러오는데 실패했습니다" },
+      { status: 500 }
+    );
+  }
 }

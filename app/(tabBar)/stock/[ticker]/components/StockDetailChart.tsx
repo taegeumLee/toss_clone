@@ -35,7 +35,7 @@ export default function StockDetailChart({ data }: StockDetailChartProps) {
   const chartOptions = useMemo(
     () => ({
       chart: {
-        type: "candlestick",
+        type: "candlestick" as const,
         height: 500,
         background: "transparent",
 
@@ -53,11 +53,11 @@ export default function StockDetailChart({ data }: StockDetailChartProps) {
         },
       },
       stroke: {
-        curve: "smooth",
+        curve: "smooth" as const,
         width: 1,
       },
       xaxis: {
-        type: "datetime",
+        type: "datetime" as const,
         labels: {
           style: {
             colors: "#9ca3af",
@@ -75,7 +75,7 @@ export default function StockDetailChart({ data }: StockDetailChartProps) {
         borderColor: "#374151",
       },
       theme: {
-        mode: "dark",
+        mode: "dark" as const,
       },
     }),
     []

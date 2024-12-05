@@ -28,7 +28,11 @@ export default function Community({ ticker }: { ticker: string }) {
   const [error, setError] = useState<string | null>(null);
 
   const filteredOpinions = useMemo(() => {
-    return opinions.sort(
+    if (!Array.isArray(opinions)) {
+      return [];
+    }
+
+    return [...opinions].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
@@ -52,9 +56,16 @@ export default function Community({ ticker }: { ticker: string }) {
           userResponse.json(),
         ]);
 
-        setOpinions(opinionsData);
+        if (Array.isArray(opinionsData)) {
+          setOpinions(opinionsData);
+        } else {
+          console.error("의견 데이터가 배열이 아닙니다:", opinionsData);
+          setOpinions([]);
+        }
+
         setUser(userData.user);
       } catch (error) {
+        console.error("데이터 fetching 오류:", error);
         setError(
           error instanceof Error ? error.message : "오류가 발생했습니다"
         );
@@ -236,110 +247,113 @@ export default function Community({ ticker }: { ticker: string }) {
           </form>
         </div>
         {/* 커뮤니티 목록 */}
-        {opinions.map((opinion) => (
-          <div
-            key={opinion.id}
-            className="flex gap-4 p-4 border-t border-neutral-700 items-center"
-          >
-            {/* 커뮤니티 작성자 */}
-            <div className="flex flex-col items-center gap-2 w-1/10">
-              <Image
-                src={opinion.user.profileImage || logo}
-                alt={opinion.user.nickname || ""}
-                width={30}
-                height={30}
-              />
-              <span className="text-neutral-400 text-xs">
-                {opinion.user.nickname}
-              </span>
-            </div>
-            {/* 커뮤니티 내용 */}
-            <div className="flex-1 gap-1/2 flex flex-col">
-              <div className="flex gap-1 pb-2 items-center">
-                <span className="text-neutral-200">{opinion.content}</span>
-                <span className="text-xs text-neutral-500">
-                  {checkTime(opinion.createdAt)}
-                </span>{" "}
+        {Array.isArray(opinions) &&
+          opinions.map((opinion) => (
+            <div
+              key={opinion.id}
+              className="flex gap-4 p-4 border-t border-neutral-700 items-center"
+            >
+              {/* 커뮤니티 작성자 */}
+              <div className="flex flex-col items-center gap-2 w-1/10">
+                <Image
+                  src={opinion.user.profileImage || logo}
+                  alt={opinion.user.nickname || ""}
+                  width={30}
+                  height={30}
+                />
+                <span className="text-neutral-400 text-xs">
+                  {opinion.user.nickname}
+                </span>
               </div>
-              {/* 좋아요 댓글 */}
-              <div className="flex p-1 justify-between">
-                <div className="flex items-center gap-2">
-                  <motion.div
-                    className="flex items-center gap-1"
-                    whileTap={{ scale: 0.95 }}
-                  >
+              {/* 커뮤니티 내용 */}
+              <div className="flex-1 gap-1/2 flex flex-col">
+                <div className="flex gap-1 pb-2 items-center">
+                  <span className="text-neutral-200">{opinion.content}</span>
+                  <span className="text-xs text-neutral-500">
+                    {checkTime(opinion.createdAt)}
+                  </span>{" "}
+                </div>
+                {/* 좋아요 댓글 */}
+                <div className="flex p-1 justify-between">
+                  <div className="flex items-center gap-2">
                     <motion.div
-                      initial={{ scale: 1 }}
-                      whileHover={{ scale: 1.1 }}
-                      animate={
-                        opinion.likes.some((like) => like.userId === user.id)
-                          ? {
-                              scale: [1, 1.2, 1],
-                              transition: { duration: 0.3 },
-                            }
-                          : {}
-                      }
+                      className="flex items-center gap-1"
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <FaHeart
-                        onClick={() => handleLike(opinion.id)}
-                        className={`cursor-pointer transition-all duration-200 ${
+                      <motion.div
+                        initial={{ scale: 1 }}
+                        whileHover={{ scale: 1.1 }}
+                        animate={
                           opinion.likes.some((like) => like.userId === user.id)
-                            ? "text-red-500 hover:text-red-600"
-                            : "text-neutral-500 hover:text-neutral-200"
+                            ? {
+                                scale: [1, 1.2, 1],
+                                transition: { duration: 0.3 },
+                              }
+                            : {}
+                        }
+                      >
+                        <FaHeart
+                          onClick={() => handleLike(opinion.id)}
+                          className={`cursor-pointer transition-all duration-200 ${
+                            opinion.likes.some(
+                              (like) => like.userId === user.id
+                            )
+                              ? "text-red-500 hover:text-red-600"
+                              : "text-neutral-500 hover:text-neutral-200"
+                          }`}
+                        />
+                      </motion.div>
+                      <motion.span
+                        className="text-xs text-neutral-500"
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 1 }}
+                        key={opinion.likes.length}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {opinion.likes.length}
+                      </motion.span>
+                    </motion.div>
+                    <div className="flex items-center gap-1">
+                      <IoChatbox
+                        className={`text-neutral-500 ${
+                          opinion.comments.length === 0 ? "opacity-50" : ""
                         }`}
                       />
-                    </motion.div>
-                    <motion.span
-                      className="text-xs text-neutral-500"
-                      initial={{ opacity: 1 }}
-                      animate={{ opacity: 1 }}
-                      key={opinion.likes.length}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {opinion.likes.length}
-                    </motion.span>
-                  </motion.div>
-                  <div className="flex items-center gap-1">
-                    <IoChatbox
-                      className={`text-neutral-500 ${
-                        opinion.comments.length === 0 ? "opacity-50" : ""
-                      }`}
-                    />
-                    <span className="text-xs text-neutral-500">
-                      {opinion.comments.length}
-                    </span>
+                      <span className="text-xs text-neutral-500">
+                        {opinion.comments.length}
+                      </span>
+                    </div>
                   </div>
+                  {opinion.user.id === user.id && (
+                    <div className="flex items-center relative">
+                      <TbDotsVertical
+                        className="text-neutral-500 hover:text-neutral-200 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleModalToggle(opinion);
+                        }}
+                      />
+                      {isModalOpen && selectedOpinion?.id === opinion.id && (
+                        <div className="absolute top-6 right-1 w-28 flex flex-col gap-2 bg-neutral-700 rounded-lg p-2 modal-container">
+                          <button className="flex items-center gap-1 text-neutral-200 hover:bg-neutral-600 px-2 py-1 rounded-md">
+                            <BsFillPencilFill />
+                            수정하기
+                          </button>
+                          <button
+                            className="flex items-center gap-1 text-neutral-200 hover:bg-neutral-600 px-2 py-1 rounded-md"
+                            onClick={handleDelete}
+                          >
+                            <FaRegTrashCan />
+                            삭제하기
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-                {opinion.user.id === user.id && (
-                  <div className="flex items-center relative">
-                    <TbDotsVertical
-                      className="text-neutral-500 hover:text-neutral-200 cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleModalToggle(opinion);
-                      }}
-                    />
-                    {isModalOpen && selectedOpinion?.id === opinion.id && (
-                      <div className="absolute top-6 right-1 w-28 flex flex-col gap-2 bg-neutral-700 rounded-lg p-2 modal-container">
-                        <button className="flex items-center gap-1 text-neutral-200 hover:bg-neutral-600 px-2 py-1 rounded-md">
-                          <BsFillPencilFill />
-                          수정하기
-                        </button>
-                        <button
-                          className="flex items-center gap-1 text-neutral-200 hover:bg-neutral-600 px-2 py-1 rounded-md"
-                          onClick={handleDelete}
-                        >
-                          <FaRegTrashCan />
-                          삭제하기
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
       <div className="bg-neutral-800 p-4 rounded-lg w-1/4">주문하기</div>
     </div>
