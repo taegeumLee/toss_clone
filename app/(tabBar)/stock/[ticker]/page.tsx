@@ -11,11 +11,12 @@ import LoadingSkeleton from "./components/LoadingSkeleton";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Community from "./components/community";
-
+import { Helmet } from "react-helmet";
 const TABS = ["차트 호가", "종목 정보", "뉴스 공시", "커뮤니티"];
 
 export default function StockDetailPage() {
   const { ticker } = useParams();
+
   const [stockData, setStockData] = useState<StockData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +57,10 @@ export default function StockDetailPage() {
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 py-6">
+      <Helmet>
+        <title>{`${ticker} | 토스증권`}</title>
+        <meta name="description" content={`${ticker} 종목 상세 페이지`} />
+      </Helmet>
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold">{ticker as string}</h1>
