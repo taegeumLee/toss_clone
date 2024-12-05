@@ -88,7 +88,7 @@ export default function FinancialAssetHeader({
           : filteredStocks.map((stock: StockData, index: number) => (
               <motion.div
                 key={stock.ticker}
-                className="min-w-[calc(33.333% - 1rem)]"
+                className="min-w-[calc(33.333% - 1rem)] "
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}

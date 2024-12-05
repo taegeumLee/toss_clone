@@ -6,6 +6,7 @@ import { StockData } from "@/types/stock";
 import FinancialAssetHeader from "@/components/layout/financialAssetHeader";
 import RealTimeStock from "@/components/stock/RealTimeStockTable/RealTimeStock";
 import LoadingSkeleton from "./components/LoadingSkeleton";
+import NewsList from "@/components/news/news";
 
 interface ClientHomeProps {
   initialData: StockData[];
@@ -41,6 +42,7 @@ export default function ClientHome({ initialData }: ClientHomeProps) {
       >
         <Suspense fallback={<LoadingSkeleton />}>
           <FinancialAssetHeader initialData={initialData} />
+          <NewsList />
           <RealTimeStock initialData={initialData} />
         </Suspense>
       </div>

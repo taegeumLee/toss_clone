@@ -1,6 +1,6 @@
 # 실시간 주식 모니터링 대시보드
 
-![alt text](image.png)
+![alt text](image-1.png)
 실시간으로 국내외 주식 시장을 모니터링할 수 있는 웹 애플리케이션입니다.
 
 ## 주요 기능
@@ -14,6 +14,8 @@
 - 사용자 인증 (로그인/회원가입)
 - 실시간 시장 상태 표시
 - 종목별 상세 정보 제공
+- 실시간 뉴스 피드
+- 종목별 커뮤니티
 
 ## 기술 스택
 
@@ -24,11 +26,17 @@
 - TailwindCSS
 - Framer Motion
 - ApexCharts
+- React Helmet
 
 ### 상태 관리
 
 - React Hooks
 - SWR
+
+### 백엔드
+
+- Prisma (ORM)
+- Polygon.io API
 
 ### 개발 도구
 
@@ -46,6 +54,11 @@
 - Polygon.io API 키
 
 ### 환경 변수 설정
+
+`.env.local` 파일을 생성하고 다음 변수들을 설정하세요:
+
+- `POLYGON_API_KEY=your_api_key`
+- `NEXT_PUBLIC_API_URL=http://localhost:3000`
 
 ## 프로젝트 구조
 
@@ -77,6 +90,11 @@
 - POST `/api/auth/login` - 로그인
 - POST `/api/auth/register` - 회원가입
 - POST `/api/auth/logout` - 로그아웃
+
+### 커뮤니티
+
+- POST `/api/stock/newOpinion` - 의견 작성
+- GET `/api/stock/getOpinion` - 의견 조회
 
 ## 라이선스
 
