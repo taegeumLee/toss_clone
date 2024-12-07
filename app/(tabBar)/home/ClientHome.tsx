@@ -18,6 +18,7 @@ export default function ClientHome({ initialData }: ClientHomeProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
+      console.log("isLoading", isLoading);
     }); // 최소 로딩 시간 설정
 
     return () => clearTimeout(timer);
