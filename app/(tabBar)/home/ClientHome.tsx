@@ -26,7 +26,6 @@ export default function ClientHome({ initialData }: ClientHomeProps) {
 
   return (
     <div className="relative">
-      {/* 스켈레톤 UI */}
       <div
         className={`absolute inset-0 transition-opacity duration-300 ${
           isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
