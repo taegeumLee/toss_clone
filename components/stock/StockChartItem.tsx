@@ -12,7 +12,6 @@ interface StockChartItemProps {
   stock: StockData;
   market: string;
 }
-
 export default function StockChartItem({ stock, market }: StockChartItemProps) {
   const router = useRouter();
 
