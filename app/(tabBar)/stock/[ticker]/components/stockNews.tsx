@@ -1,31 +1,13 @@
-import NewsCard, { NewsCardProps } from "@/components/news/newsCard";
-import { useEffect, useState } from "react";
+"use client";
+
+import NewsCard from "@/components/news/newsCard";
+import { useNews } from "@/hooks/useNews";
 
 export default function StockNews({ ticker }: { ticker: string }) {
-  const [data, setData] = useState<{ items: NewsCardProps[] } | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, error } = useNews(ticker);
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await fetch(`/api/news?query=${ticker}`, {
-          method: "GET",
-        });
-        if (!response.ok) {
-          throw new Error("뉴스 데이터를 불러오는데 실패했습니다");
-        }
-        const newsData = await response.json();
-        setData(newsData);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "오류가 발생했습니다");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  if (isLoading || error) return null;
 
-    fetchNews();
-  }, []);
   return (
     <div className="flex gap-4">
       <div className="flex flex-col bg-neutral-800 p-4 rounded-lg w-3/4 gap-4">

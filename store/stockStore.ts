@@ -18,11 +18,11 @@ export const useStockStore = create<StockStore>((set) => ({
   fetchStocks: async (tickers: string[]) => {
     set({ isLoading: true });
     try {
-      const response = await fetchAPI("/api/stock/getStocks", {
+      const data = await fetchAPI("/api/stock/getStocks", {
         params: { tickers: tickers.join(",") },
       });
-      set({ stocks: response, error: null });
-    } catch (error) {
+      set({ stocks: data, error: null });
+    } catch {
       set({ error: "Failed to fetch stocks" });
     } finally {
       set({ isLoading: false });
