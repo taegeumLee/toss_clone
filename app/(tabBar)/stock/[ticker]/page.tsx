@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Community from "./components/community";
 import { Helmet } from "react-helmet";
+import StockNews from "./components/stockNews";
 const TABS = ["차트 호가", "종목 정보", "뉴스 공시", "커뮤니티"];
 
 export default function StockDetailPage() {
@@ -111,7 +112,7 @@ export default function StockDetailPage() {
           </div>
         )}
         {selectedTab === "종목 정보" && null}
-        {selectedTab === "뉴스 공시" && null}
+        {selectedTab === "뉴스 공시" && <StockNews ticker={ticker as string} />}
         {selectedTab === "커뮤니티" && <Community ticker={ticker as string} />}
       </div>
     </div>

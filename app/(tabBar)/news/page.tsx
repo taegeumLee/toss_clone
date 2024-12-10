@@ -3,12 +3,9 @@ import NewsLoading from "./loading";
 
 export default async function News() {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/news`,
-      {
-        next: { revalidate: 300 },
-      }
-    );
+    const response = await fetch(`/api/news`, {
+      next: { revalidate: 300 },
+    });
 
     if (!response.ok) {
       throw new Error("뉴스 데이터를 불러오는데 실패했습니다");

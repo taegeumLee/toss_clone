@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { unstable_cache } from "next/cache";
 
 const getNaverNews = unstable_cache(
-  async () => {
+  async (query: string) => {
     const response = await fetch(
-      "https://openapi.naver.com/v1/search/news.json?query=해외&display=10",
+      `https://openapi.naver.com/v1/search/news.json?query=${encodeURIComponent(
+        query
+      )}&display=10`,
       {
         headers: {
           "X-Naver-Client-Id": process.env.NAVER_CLIENT_ID!,
@@ -24,11 +26,14 @@ const getNaverNews = unstable_cache(
   { revalidate: 300, tags: ["news"] }
 );
 
-export const revalidate = 300; // 5분마다 재검증
+export const revalidate = 300;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const data = await getNaverNews();
+    const searchParams = request.nextUrl.searchParams;
+    const query = searchParams.get("query") || "해외";
+
+    const data = await getNaverNews(query);
     return NextResponse.json(data);
   } catch (error) {
     console.error("뉴스 데이터 조회 중 오류:", error);

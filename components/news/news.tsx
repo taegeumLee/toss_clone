@@ -18,9 +18,9 @@ export default function NewsList() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/news`
-        );
+        const response = await fetch(`/api/news?query=해외`, {
+          method: "GET",
+        });
         if (!response.ok) {
           throw new Error("뉴스 데이터를 불러오는데 실패했습니다");
         }
