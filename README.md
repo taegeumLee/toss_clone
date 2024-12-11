@@ -1,7 +1,9 @@
 # 토스증권 클론 프로젝트
 
 ![alt text](image-1.png)
-
+![alt text](image-2.png)
+![alt text](image-3.png)
+![alt text](image-4.png)
 실시간 주식 정보와 뉴스를 제공하는 토스증권 클론 웹 애플리케이션입니다.
 
 ## 주요 기능
