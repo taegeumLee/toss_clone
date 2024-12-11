@@ -1,21 +1,17 @@
-# 실시간 주식 모니터링 대시보드
+# 토스증권 클론 프로젝트
 
 ![alt text](image-1.png)
-실시간으로 국내외 주식 시장을 모니터링할 수 있는 웹 애플리케이션입니다.
+
+실시간 주식 정보와 뉴스를 제공하는 토스증권 클론 웹 애플리케이션입니다.
 
 ## 주요 기능
 
-- 실시간 주가 모니터링
-- 국내/해외 주식 시장 구분
-- 차트 기반 시각화
-- 반응형 디자인
-- 드래그 가능한 차트 인터페이스
-- 스켈레톤 로딩 UI
-- 사용자 인증 (로그인/회원가입)
-- 실시간 시장 상태 표시
-- 종목별 상세 정보 제공
+- 실시간 주식 정보 조회
+- 국내/해외 주식 시세 확인
 - 실시간 뉴스 피드
-- 종목별 커뮤니티
+- 종목별 상세 정보
+- 커뮤니티 기능 (댓글, 좋아요)
+- 반응형 디자인
 
 ## 기술 스택
 
@@ -23,80 +19,86 @@
 
 - Next.js 14 (App Router)
 - TypeScript
-- TailwindCSS
+- Tailwind CSS
 - Framer Motion
-- ApexCharts
-- React Helmet
-
-### 상태 관리
-
-- React Hooks
 - SWR
+- Zustand
 
-### 백엔드
+### Backend
 
-- Prisma (ORM)
-- Polygon.io API
+- Next.js API Routes
+- Prisma
+- SQLite
 
-### 개발 도구
+### API
 
-- ESLint
-- Prettier
-- PostCSS
-- Zod (유효성 검사)
+- Polygon.io (주식 데이터)
+- Naver News API
 
 ## 시작하기
 
-### 필수 요구사항
+1. 저장소 클론
 
-- Node.js 18.0.0 이상
-- npm 또는 yarn
-- Polygon.io API 키
+```bash
+git clone https://
+```
 
-### 환경 변수 설정
+2. 의존성 설치
 
-`.env.local` 파일을 생성하고 다음 변수들을 설정하세요:
+```bash
+npm install
+```
 
-- `POLYGON_API_KEY=your_api_key`
-- `NEXT_PUBLIC_API_URL=http://localhost:3000`
+3. 환경 변수 설정
+
+```bash
+cp .env.example .env
+```
+
+필요한 API 키와 환경 변수를 설정해주세요.
+
+4. 데이터베이스 설정
+
+```bash
+npx prisma migrate dev
+```
+
+5. 개발 서버 실행
+
+```bash
+npm run dev
+```
+
+## 환경 변수
+
+```env
+DATABASE_URL="file:./database.db"
+POLYGON_API_KEY="your_polygon_api_key"
+NAVER_CLIENT_ID="your_naver_client_id"
+NAVER_CLIENT_SECRET="your_naver_client_secret"
+```
 
 ## 프로젝트 구조
 
-### 설치 방법
-
-1. 저장소 클론
-
-   ```bash
-   git clone https://github.com/yourusername/stock-monitoring-dashboard.git
-   ```
-
-2. 의존성 설치
-   npm install
-
-3. 개발 서버 실행
-   npm run dev
-
-4. http://localhost:3000 접속
-
-## API 엔드포인트
-
-### 주식 데이터
-
-- GET `/api/stock/getStocks` - 여러 종목의 주식 데이터 조회
-- GET `/api/stock/[ticker]` - 특정 종목의 상세 데이터 조회
-
-### 사용자 인증
-
-- POST `/api/auth/login` - 로그인
-- POST `/api/auth/register` - 회원가입
-- POST `/api/auth/logout` - 로그아웃
-
-### 커뮤니티
-
-- POST `/api/stock/newOpinion` - 의견 작성
-- GET `/api/stock/getOpinion` - 의견 조회
+```
+├── app/                 # Next.js 앱 라우터
+├── components/          # 재사용 가능한 컴포넌트
+├── hooks/              # 커스텀 훅
+├── lib/                # 유틸리티 함수
+├── prisma/             # Prisma 스키마 및 마이그레이션
+├── public/             # 정적 파일
+├── store/              # 상태 관리
+└── types/              # TypeScript 타입 정의
+```
 
 ## 라이선스
 
 MIT License
-Yageum Lee
+
+## 기여하기
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
