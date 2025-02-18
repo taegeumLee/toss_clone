@@ -18,7 +18,7 @@ export default function NewsCard({
       <div className="flex flex-col h-full justify-between gap-2">
         <div>
           <h2
-            className="text-lg font-medium mb-2 line-clamp-2"
+            className="text-lg font-medium mb-2 line-clamp-2 text-white"
             dangerouslySetInnerHTML={{ __html: title }}
           />
           <p

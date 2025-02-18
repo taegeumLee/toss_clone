@@ -22,7 +22,7 @@ export default function NewsList() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <h2 className="text-xl font-bold mb-4">실시간 뉴스</h2>
+      <h2 className="text-white text-xl font-bold mb-4">실시간 뉴스</h2>
       <div
         ref={containerRef}
         className={`flex gap-4 overflow-x-auto scrollbar-hide ${

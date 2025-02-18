@@ -54,7 +54,7 @@ export default function StockChartItem({ stock, market }: StockChartItemProps) {
               {priceChange.toFixed(2)}%
             </span>
           </div>
-          <span className="text-base">{priceDisplay}</span>
+          <span className="text-base text-white">{priceDisplay}</span>
         </div>
         <div className="w-full h-24">
           <Chart
